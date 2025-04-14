@@ -1,0 +1,48 @@
+# В терминале создаём директорию
+``mkdir chat_bot``
+
+# Если работаешь через VS CODE удобно перейти в директорию для работы
+``code chat_bot``
+
+# Накидываем структуру проекта
+``touch docker-compose.yml Dockerfile app.js db.js package.json export.js``
+
+# Заполняем файлы, кроме docker-compose.yaml 
+
+
+# Собираем и запускаем контейнеры
+``docker-compose up -d --build``
+
+#Проверяем запустились ли контейнеры (их должно быть два)
+docker-compose ps
+
+# Тестируем отправку сообщений
+curl -X POST -H "Content-Type: application/json" \
+-d '{"userId": "user1", "text": "First message"}' \
+http://localhost:3000/message
+
+curl -X POST -H "Content-Type: application/json" \
+-d '{"userId": "user2", "text": "Second message"}' \
+http://localhost:3000/message
+
+curl -X POST -H "Content-Type: application/json" \
+-d '{"userId": "user1", "text": "My cat is hungry!"}' \
+http://localhost:3000/message
+
+#Проверяем, что данные были записаны в БД
+docker exec -it chat_bot-db-1 mysql -uroot -ppassword chatbot -e "SELECT * FROM messages; SELECT * FROM user_stats;"
+
+#Проверка логов 
+docker-compose logs app
+
+#Для импорта данных запускаем команду
+docker exec -it chat_bot-app-1 node /app/export.js
+
+#Проверяем успешность
+docker cp chat_bot-app-1:/app/messages.csv .
+
+# Останавливаем и удаляем контейнеры
+docker-compose down -v
+
+# Удаляем образ (опционально)
+docker rmi chat_bot-app
