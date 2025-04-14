@@ -1,1 +1,5 @@
 https://github.com/BelikMary/docker_lab3.1 практика к 9 билету
+
+Если не поднимается контейнер приложения и пишет, что чего то не хватает 
+npm install express
+npm install mongodb
