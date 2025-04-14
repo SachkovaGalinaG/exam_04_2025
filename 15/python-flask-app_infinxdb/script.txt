@@ -1,0 +1,19 @@
+1) Запуск 
+
+docker compose up -d --build
+
+http://localhost:5000/ - основное приложение 
+
+http://localhost:8086/ - Сервис БД
+
+2) Загрузка с помощью скрипта 
+
+docker compose exec app python script.py
+
+вывод должен быть такой: 
+
+time.datetime.now(datetime.UTC).
+  timestamp = datetime.utcnow() - timedelta(days=30-day)
+Добавлены данные для 5 локаций за 30 дней
+
+Данные можно проверить на http://localhost:5000/
