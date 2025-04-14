@@ -1,0 +1,29 @@
+1) Чтобы запустить сервисы
+
+docker compose up --build 
+
+Должно выйти 
+
+ ✔ app                                           Built                                                                                                              
+ ✔ Network python-flask-app_mongo_default        Created                                                                                                            
+ ✔ Volume "python-flask-app_mongo_mongodb_data"  Created                                                                                                            
+ ✔ Container python-flask-app_mongo-mongodb-1    Created                                                                                                            
+ ✔ Container python-flask-app_mongo-app-1        Created 
+
+Сайт с добавлением по одной записи доступены по http://localhost:5000/. Там же кстати внизу будут и отображаться загруженные данные
+
+2) Чтобы загрузить данные через Faker 
+
+docker compose exec app python script.py - загрузка данных. Должно выйти, что все загружено. Можно проверять в http://localhost:5000 или в контейнере
+
+2.1) Вход в контейнер 
+	docker compose exec mongodb mongosh -u admin -p admin - вход в контейнер mongo
+
+	use bilet12
+	show collections - должно выйти products
+	db.products.find().pretty() - json данные 
+	db.products.countDocuments() - количество данных
+	exit - выход
+
+
+

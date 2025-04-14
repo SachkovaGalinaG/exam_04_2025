@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue Forecast System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #20c997;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #12b886;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid #20c997;
+        }
+        .product-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .product-category {
+            display: inline-block;
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .forecast-badge {
+            background: #fff3bf;
+            color: #e67700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .metrics {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .metrics div {
+            margin-bottom: 5px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        .nav-links a {
+            color: #20c997;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #868e96;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Revenue Forecast System</h1>
+        <div class="nav-links">
+            <a href="/forecast">View Forecast Report</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>Add New Product</h2>
+        <form method="POST" action="/">
+            <div class="form-group">
+                <label for="name">Product Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="current_sales">Current Sales (units)</label>
+                <input type="number" id="current_sales" name="current_sales" required min="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="current_revenue">Current Revenue ($)</label>
+                <input type="number" id="current_revenue" name="current_revenue" required step="0.01" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <option value="" disabled selected>Select category</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Home">Home</option>
+                    <option value="Toys">Toys</option>
+                    <option value="Books">Books</option>
+                    <option value="Food">Food</option>
+                </select>
+            </div>
+            
+            <button type="submit">Add Product & Generate Forecast</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Current Products with Forecasts</h2>
+        <p>Last updated: {{ current_date }}</p>
+        
+        {% if products %}
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card">
+                <div class="product-name">{{ product.name }}</div>
+                <div class="product-category">{{ product.category }}</div>
+                <span class="forecast-badge">Forecast until {{ product.forecast.valid_until.strftime('%Y-%m-%d') }}</span>
+                
+                <div class="metrics">
+                    <div><strong>Current Sales:</strong> {{ product.current_sales }} units</div>
+                    <div><strong>Current Revenue:</strong> ${{ "%.2f"|format(product.current_revenue) }}</div>
+                    <div><strong>Projected Sales:</strong> {{ product.forecast.next_quarter.projected_sales }} units</div>
+                    <div><strong>Projected Revenue:</strong> ${{ "%.2f"|format(product.forecast.next_quarter.projected_revenue) }}</div>
+                    <div><strong>Confidence Level:</strong> {{ (product.forecast.next_quarter.confidence_level * 100)|int }}%</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>No products with active forecasts found. Add your first product above!</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
