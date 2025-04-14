@@ -1,0 +1,16 @@
+1) Запуск 
+
+ docker compose up -d --build 
+
+Контейнер python-flask-app_neo4j-neo4j-1 может долго грузить, но потом должно быть Healthy
+
+2) На всякий случай копируем файл script
+
+docker cp script.py python-flask-app_neo4j-app-1:/app/
+
+docker exec -it python-flask-app_neo4j-app-1 python script.py - загрузка данных
+
+Все будет доступно по http://localhost:7474/browser/
+
+Логин: neo4j
+Пароль: password123 
