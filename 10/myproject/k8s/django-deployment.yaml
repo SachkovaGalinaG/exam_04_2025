@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+        - name: django
+          image: myproject:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: SECRET_KEY  # Добавляем SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: django-secrets
+                  key: SECRET_KEY
+            - name: DB_NAME
+              value: django_db
+            - name: DB_USER
+              value: django
+            - name: DB_PASSWORD  
+              valueFrom:
+                secretKeyRef:
+                  name: django-secrets
+                  key: DB_PASSWORD
+            - name: DB_HOST
+              value: mysql
