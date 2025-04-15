@@ -1,1 +1,2 @@
-
+Данные скачать отсюда - https://www.kaggle.com/code/miljan/predicting-tags-for-stackoverflow/input
+нужны вопросы и теги
