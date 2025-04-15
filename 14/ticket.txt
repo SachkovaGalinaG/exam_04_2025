@@ -1,1 +1,7 @@
+docker compose exec web python manage.py generate_orders 100
+
+Создает 100 строк.
+
+Страница со статистикой: http://localhost:8000/orders/stats/
+Административный интерфейс (http://localhost:8000/admin/)
 
