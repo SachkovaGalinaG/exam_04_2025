@@ -1,0 +1,49 @@
+Чтобы создать новую БД, нужно изменить название в .env и в .yml
+
+FLASK_SQLALCHEMY_DATABASE_URI=postgresql://admin:admin@db:5432/<новое название БД>
+
+
+db:
+    image: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: <новое название БД>
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+
+1) Запуск: 
+
+
+Основаня команда - docker compose up --build. После нее все работает
+
+docker compose down --remove-orphans - если заняты порты
+
+docker build -t app .
+
+-- Если другое не работает, но это запускает другой контейнре отдельно 
+
+docker compose run -p 5000:5000 app - чтобы запустить сайт с добавлением записей http://127.0.0.1:5000
+
+
+2) После успешного запуска 
+
+docker compose run app bash - заходим в bash
+
+rm -rf migrations/ (если папка с миграциями есть) 
+
+flask db init 
+
+flask shell - заходим во flask
+
+db.create_all() - должно ничего не вывести. Это значит, что база создалась и можно подключатся в Adminer http://127.0.0.1:8080 
+Пароль и логин: admin - admin
+
+все в том же flask: exec(open("app/script.py").read()) - Должно вывести, что загружено
+
+ВСЕ. НА ЭТОМ ЗАДАНИЕ ГОТОВО. В Adminer можно делай SQL скрипты, чтобы Реализовать расчет среднего спроса по категориям товаров.
+
+
+
+
