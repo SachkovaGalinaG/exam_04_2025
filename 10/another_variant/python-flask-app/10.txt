@@ -1,0 +1,63 @@
+mgpu@mgpu-VirtualBox:~$ sudo apt update
+mgpu@mgpu-VirtualBox:~$ sudo apt install postgresql postgresql-contrib
+mgpu@mgpu-VirtualBox:~$ sudo systemctl status postgresql
+mgpu@mgpu-VirtualBox:~$ sudo -i -u postgres
+postgres@mgpu-VirtualBox:~$ psql
+psql (12.22 (Ubuntu 12.22-0ubuntu0.20.04.2))
+Type "help" for help.
+
+postgres=# CREATE DATABASE exam;
+CREATE DATABASE
+postgres=# CREATE USER admin WITH PASSWORD 'admin';
+CREATE ROLE
+postgres=# GRANT ALL PRIVILEGES ON DATABASE exam TO admin;
+GRANT
+postgres=# \q
+postgres@mgpu-VirtualBox:~$ exit
+logout
+mgpu@mgpu-VirtualBox:~$ psql -h localhost -U admin -d exam -W
+Password: 
+psql (12.22 (Ubuntu 12.22-0ubuntu0.20.04.2))
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+Type "help" for help.
+
+exam=> ^C
+
+вход в бд
+
+mgpu@mgpu-VirtualBox:~/docker/Docker lab 3/python-flask-app$ docker exec -it python-flask-app-db-1 psql -U admin -d exam
+psql (13.20)
+Type "help" for help.
+
+exam=# \dt
+        List of relations
+ Schema |  Name   | Type  | Owner 
+--------+---------+-------+-------
+ public | product | table | admin
+(1 row)
+
+exam=# exit
+
+в соседнем терминале копирование файла для анализа в задании 3
+
+mgpu@mgpu-VirtualBox:~/docker/Docker lab 3/python-flask-app$ docker exec -it python-flask-app-db-1 psql -U admin -d exam
+psql (13.20)
+Type "help" for help.
+
+exam=# \copy (SELECT * FROM product) TO '/tmp/product.csv' WITH CSV HEADER;
+COPY 101
+exam=# exit
+mgpu@mgpu-VirtualBox:~/docker/Docker lab 3/python-flask-app$ docker cp python-flask-app-db-1:/tmp/product.csv ./
+Successfully copied 5.12kB to /home/mgpu/docker/Docker lab 3/python-flask-app/./
+mgpu@mgpu-VirtualBox:~/docker/Docker lab 3/python-flask-app$ 
+
+
+если траблы с портами
+
+mgpu@mgpu-VirtualBox:~/docker/Docker lab 3/python-flask-app$ sudo lsof -i :5432
+COMMAND   PID     USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+postgres  807 postgres    3u  IPv4  26487      0t0  TCP localhost:postgresql (LISTEN)
+psql     3001     mgpu    3u  IPv4  49221      0t0  TCP localhost:42482->localhost:postgresql (ESTABLISHED)
+postgres 3010 postgres    8u  IPv4  47502      0t0  TCP localhost:postgresql->localhost:42482 (ESTABLISHED)
+mgpu@mgpu-VirtualBox:~/docker/Docker lab 3/python-flask-app$ sudo kill -9 3001
+mgpu@mgpu-VirtualBox:~/docker/Docker lab 3/python-flask-app$ sudo kill -9 3010
