@@ -1,0 +1,33 @@
+#Создаём директорию и заходим в неё
+mkdir node-mongo-app && code node-mongo-app
+
+#остановка контейнеров
+docker stop $(docker ps -qa)
+
+#удаление контейнеров
+docker rm $(docker ps -qa)
+
+#Дропаем образы
+docker rmi -f $(docker images -qa)
+
+# собираем контейнер и запускаем приложения
+sudo docker compose up --build
+
+# проверяем запущенные контейнеры и сервисы
+docker-compose ps
+
+#генерация и запись данных в БД
+curl -X POST http://localhost:3000/sale
+
+#Очистка данных и запись в БД данных за несколько месяцев
+curl -X POST http://localhost:3000/generate-test-data
+
+#получение данных по месяцам
+curl -X GET http://localhost:3000/revenue/monthly
+
+#получение данных о продажах
+curl -X GET http://localhost:3000/sales
+
+#Переход в браузер 
+http://localhost:8081/db/salesdb/sales
+Здесь можно выгрузить данные в csv и выполнить визуализацию любым удобным способом
