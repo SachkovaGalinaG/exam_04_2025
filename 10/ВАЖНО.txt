@@ -1,3 +1,5 @@
 1) Загрузил не те файлы.
 
 Вот правильные https://github.com/Igor69-web/docker/tree/main/Docker%20lab%203
+
+2) Создать также .env с FLASK_SQLALCHEMY_DATABASE_URI=postgresql://admin:admin@db:5432/bilet10
